@@ -1,10 +1,10 @@
 from flask_restx import Api
-from app.config import Config
-from app.database import db
+from application.config import Config
+from application.database import db
 from flask import Flask
 from flask_migrate import Migrate
 
-from app.views.users import user_ns
+from application.views.users import user_ns
 
 
 def create_app(config: Config) -> Flask:
@@ -27,4 +27,4 @@ migrate = Migrate(app, db)
 configure_app(app)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080)
+    app.run(debug=True, port=8081)

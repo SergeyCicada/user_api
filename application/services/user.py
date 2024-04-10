@@ -1,4 +1,8 @@
-from app.dao.user import UserDAO
+import base64
+import hashlib
+
+from application.dao.user import UserDAO
+from application.helpers.constants import PWD_SALT, PWD_ITERATIONS
 
 
 class UserService:
@@ -12,6 +16,7 @@ class UserService:
         return self.dao.get_all()
 
     def create(self, data):
+        data["password"] = self.generate_password(data["password"])
         return self.dao.create(data)
 
     def update(self, data):
@@ -20,6 +25,8 @@ class UserService:
 
         user.username = data.get("username")
         user.age = data.get("age")
+        user.password = self.generate_password(data.get("password"))
+        user.role = data.get("role")
 
         self.dao.update(user)
 
@@ -31,8 +38,21 @@ class UserService:
             user.username = data.get("username")
         if "age" in data:
             user.age = data.get("age")
+        if "password" in data:
+            user.password = self.generate_password(data.get("password"))
+        if "role" in data:
+            user.role = data.get("role")
 
         self.dao.update(user)
 
     def delete(self, uid):
         self.dao.delete(uid)
+
+    def generate_password(self, password):
+        hash_digest = hashlib.pbkdf2_hmac(
+            'sha256',
+            password.encode('utf-8'),
+            PWD_SALT,
+            PWD_ITERATIONS
+        )
+        return base64.b64encode(hash_digest)

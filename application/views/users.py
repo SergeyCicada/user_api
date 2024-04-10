@@ -1,8 +1,8 @@
 from flask import jsonify, request
 from flask_restx import Namespace, Resource
 
-from app.container import user_service
-from app.dao.models.user import UserSchema
+from application.container import user_service
+from application.dao.models.user import UserSchema
 
 user_ns = Namespace('users')
 
