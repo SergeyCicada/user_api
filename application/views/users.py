@@ -3,6 +3,7 @@ from flask_restx import Namespace, Resource
 
 from application.container import user_service
 from application.dao.models.user import UserSchema
+from application.helpers.decorators import admin_required
 
 user_ns = Namespace('users')
 
@@ -45,8 +46,8 @@ class UserView(Resource):
 
         return "", 204
 
-    def delete(self, uid : int):
+    @admin_required
+    def delete(self, uid: int):
         user_service.delete(uid)
 
         return "", 204
-
