@@ -3,7 +3,7 @@ from flask_restx import Namespace, Resource
 
 from application.container import user_service
 from application.dao.models.user import UserSchema
-from application.helpers.decorators import admin_required
+from application.helpers.decorators import admin_required, auth_required
 
 user_ns = Namespace('users')
 
@@ -13,11 +13,13 @@ users_schema = UserSchema(many=True)
 
 @user_ns.route('/')
 class UsersView(Resource):
+    @auth_required
     def get(self):
         all_users = user_service.get_all()
 
         return users_schema.dump(all_users), 200
 
+    @auth_required
     def post(self):
         req_json = request.json
         user = user_service.create(req_json)
@@ -27,11 +29,13 @@ class UsersView(Resource):
 
 @user_ns.route('/<int:uid>')
 class UserView(Resource):
+    @auth_required
     def get(self, uid: int):
         user = user_service.get_one(uid)
 
         return user_schema.dump(user), 200
 
+    @auth_required
     def put(self, uid: int):
         req_json = request.json
         req_json["id"] = uid
@@ -39,6 +43,7 @@ class UserView(Resource):
 
         return "", 201
 
+    @auth_required
     def patch(self, uid: int):
         req_json = request.json
         req_json["id"] = uid
